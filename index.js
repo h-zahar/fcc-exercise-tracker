@@ -122,12 +122,13 @@ app.post('/api/users/:_id/exercises', (req, res) => {
             .catch(err => console.log(err));
         }
       })
-      
-      res.json(exercise);
+      const userObj = JSON.parse(JSON.stringify(exercise));
+      userObj._id = _id;
+      res.json(userObj);
     })
     .catch(err => res.json(err));
   })
-  
+  .catch(err => res.json(err));
 });
 
 app.get('/api/users/:_id/logs', (req, res) => {
