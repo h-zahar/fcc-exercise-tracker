@@ -133,9 +133,30 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
+  const { from, to, limit } = req.query;
+  // let query = {_id};
+  // if (req.query?.from) query['date'] = { $gte: new Date(req.query.from) };
+  // if (req.query?.to) query['date'] = { $lte: new Date(req.query.to)};
+  // if (req.query?.limit) query['$limit'] = req.query.limit;
+  // console.log(query);
+  console.log(from, to, limit);
   Log.findById({ _id })
-  .then(data => res.json(data))
-  .catch(err => res.json(err));
+    .then(data => {
+      let newLog = [ ...data.log ];
+      if (from !== undefined && from !== "" && data.log.length !== 0) {
+        newLog = newLog.filter(nL => new Date(nL.date) >= new Date(from));
+      }
+      if (to !== undefined && to !== "" && newLog.length !== 0) {
+        newLog = newLog.filter(nL => new Date(nL.date) <= new Date(to));
+      }
+      if (limit !== undefined && limit !== "" && newLog.length > parseInt(limit)) {
+        newLog = newLog.slice(0, parseInt(limit));
+      }
+      data.log = newLog;
+      data.count = data.log.length;
+      res.json(data);
+    })
+    .catch(err => res.json(err));
 });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
