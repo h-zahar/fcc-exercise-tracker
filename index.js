@@ -139,7 +139,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
   // if (req.query?.to) query['date'] = { $lte: new Date(req.query.to)};
   // if (req.query?.limit) query['$limit'] = req.query.limit;
   // console.log(query);
-  console.log(from, to, limit);
+  // console.log(from, to, limit);
   Log.findById({ _id })
     .then(data => {
       let newLog = [ ...data.log ];
